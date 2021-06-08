@@ -7,7 +7,8 @@ import Profile from "../screens/Profile";
 import { Ionicons } from "@expo/vector-icons";
 import TabIcon from "../components/nav/TabIcon";
 import Me from "../screens/Me";
-import StackNavFactory from "../components/nav/StackNavFactory";
+import StackNavFactory from "./SharedStackNav";
+import Photo from "../screens/Photo";
 
 const Tabs = createBottomTabNavigator();
 
@@ -36,7 +37,6 @@ export default function LoggedInNav() {
       </Tabs.Screen>
       <Tabs.Screen
         name="Search"
-        component={Search}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon
@@ -47,10 +47,10 @@ export default function LoggedInNav() {
             />
           ),
         }}
-      />
+      >{() => <StackNavFactory screenName="Search" />}</Tabs.Screen>
       <Tabs.Screen
         name="Camera"
-        component={Search}
+        component={Photo}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon
@@ -64,7 +64,6 @@ export default function LoggedInNav() {
       />
       <Tabs.Screen
         name="Notifications"
-        component={Notifications}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon
@@ -75,10 +74,9 @@ export default function LoggedInNav() {
             />
           ),
         }}
-      />
+      >{() => <StackNavFactory screenName="Notifications" />}</Tabs.Screen>
       <Tabs.Screen
         name="Me"
-        component={Me}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon
@@ -89,7 +87,7 @@ export default function LoggedInNav() {
             />
           ),
         }}
-      />
+      >{() => <StackNavFactory screenName="Me" />}</Tabs.Screen>
     </Tabs.Navigator>
   );
 }
