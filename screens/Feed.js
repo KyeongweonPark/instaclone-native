@@ -1,14 +1,24 @@
 import { gql, useQuery } from "@apollo/client";
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { logUserOut } from "../apollo";
+import Photo from "../components/Photo";
+import ScreenLayout from "../components/ScreenLayout";
 import { COMMENT_FRAGMENT } from "../fragments";
 
 const FEED_QUERY = gql`
-  query seeFeed {
-    seeFeed {
+  query seeFeed($offset: Int!) {
+    seeFeed(offset: $offset) {
       id
       user {
+        id
         username
         avatar
       }
@@ -27,21 +37,46 @@ const FEED_QUERY = gql`
   ${COMMENT_FRAGMENT}
 `;
 
-export default function Feed({navigation}) {
-
-  const {data} = useQuery(FEED_QUERY);
-  console.log(data);
+export default function Feed({ navigation }) {
+  const { data, loading, refetch, fetchMore } = useQuery(FEED_QUERY, {
+    variables: {
+      offset: 0,
+    },
+  });
+  const renderPhoto = ({ item: photo }) => {
+    return <Photo {...photo} />;
+  };
+  const refresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+  const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <View
-      style={{
-        backgroundColor: "white",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-        <Text style={{ color: "#8E8E8E" }}>Feed</Text>
-    </View>
+    <ScreenLayout loading={loading}>
+      <FlatList
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: "100%",
+              height: 1,
+              backgroundColor: "rgba(225,225,225,0.5)",
+            }}
+          ></View>
+        )}
+        onEndReachedThreshold={0.4}
+        onEndReached={() =>
+          fetchMore({ variables: { offset: data?.seeFeed?.length } })
+        }
+        refreshing={refreshing}
+        onRefresh={refresh}
+        style={{ width: "100%" }}
+        showsVerticalScrollIndicator={false}
+        data={data?.seeFeed}
+        keyExtractor={(photo) => "" + photo.id}
+        renderItem={renderPhoto}
+      />
+    </ScreenLayout>
   );
 }
