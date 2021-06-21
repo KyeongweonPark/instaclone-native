@@ -9,10 +9,15 @@ import TabIcon from "../components/nav/TabIcon";
 import Me from "../screens/Me";
 import StackNavFactory from "./SharedStackNav";
 import Photo from "../screens/Photo";
+import useMe from "../hooks/useMe";
+import { colors } from "../screens/colors";
+import { Image } from "react-native";
 
 const Tabs = createBottomTabNavigator();
 
 export default function LoggedInNav() {
+  const { data } = useMe();
+
   return (
     <Tabs.Navigator
       tabBarOptions={{
@@ -47,7 +52,9 @@ export default function LoggedInNav() {
             />
           ),
         }}
-      >{() => <StackNavFactory screenName="Search" />}</Tabs.Screen>
+      >
+        {() => <StackNavFactory screenName="Search" />}
+      </Tabs.Screen>
       <Tabs.Screen
         name="Camera"
         component={Photo}
@@ -74,20 +81,38 @@ export default function LoggedInNav() {
             />
           ),
         }}
-      >{() => <StackNavFactory screenName="Notifications" />}</Tabs.Screen>
+      >
+        {() => <StackNavFactory screenName="Notifications" />}
+      </Tabs.Screen>
       <Tabs.Screen
         name="Me"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <TabIcon
-              iconName={"person"}
-              color={color}
-              focused={focused}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ focused, color, size }) =>
+            data?.me?.avatar ? (
+              <Image
+                source={{ uri: data.me.avatar }}
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 10,
+                  ...(focused && {
+                    borderColor: `${colors.gray}`,
+                    borderWidth: 1,
+                  }),
+                }}
+              />
+            ) : (
+              <TabIcon
+                iconName={"person"}
+                color={color}
+                focused={focused}
+                size={22}
+              />
+            ),
         }}
-      >{() => <StackNavFactory screenName="Me" />}</Tabs.Screen>
+      >
+        {() => <StackNavFactory screenName="Me" />}
+      </Tabs.Screen>
     </Tabs.Navigator>
   );
 }
