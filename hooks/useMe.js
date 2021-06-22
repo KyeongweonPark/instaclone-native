@@ -24,4 +24,3 @@ export default function useMe() {
   }, [data]);
   return { data };
 }
-

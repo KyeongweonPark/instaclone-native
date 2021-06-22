@@ -75,7 +75,9 @@ export default function Search({ navigation }) {
     register("keyword", { required: true, minLength: 2 });
   }, []);
   const renderItem = ({ item: photo }) => (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => navigation.navigate("Photo", { photoId: photo.id })}
+    >
       <Image
         source={{ uri: photo.file }}
         style={{ width: width / numColumns, height: width / numColumns }}
@@ -114,5 +116,3 @@ export default function Search({ navigation }) {
     </DissmissKeyboad>
   );
 }
-
-
