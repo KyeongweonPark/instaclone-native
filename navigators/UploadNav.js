@@ -3,6 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import SelectPhoto from "../screens/SelectPhoto";
 import TakePhoto from "../screens/TakePhoto";
+import styled from "styled-components/native";
+import { TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { colors } from "../screens/colors";
 
@@ -19,7 +21,14 @@ export default function UploadNav() {
               headerTintColor: `${colors.gray}`,
               headerBackTitleVisible: false,
               headerBackImage: ({ tintColor }) => (
-                <Ionicons color={tintColor} name="close" size={20} />
+                <TouchableOpacity>
+                  <Ionicons
+                    color={tintColor}
+                    name="close"
+                    size={25}
+                    style={{ marginLeft: 5 }}
+                  />
+                </TouchableOpacity>
               ),
               headerStyle: {
                 backgroundColor: "white",
